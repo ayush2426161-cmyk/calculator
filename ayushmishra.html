@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Golden Calculator</title>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    background: linear-gradient(135deg, #fff0a6, #e9bb53, #c68b24);
+    font-family: Arial, sans-serif;
+}
+.calculator {
+    width: 100%;
+    max-width: 350px;
+    padding: 22px;
+    background: #211b13;
+    border: 1px solid #d6a844;
+    border-radius: 25px;
+    box-shadow: 0 15px 45px #60400b55;
+}
+h2 {
+    color: #f5cc70;
+    text-align: center;
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+}
+#display {
+    width: 100%;
+    height: 75px;
+    background: #332a1d;
+    border: 1px solid #80632e;
+    outline: none;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    padding: 15px;
+    text-align: right;
+    color: #fff5d6;
+    font-size: 30px;
+}
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+button {
+    height: 60px;
+    border: none;
+    border-radius: 12px;
+    background: #51432c;
+    color: white;
+    font-size: 21px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+button:hover {
+    background: #75603b;
+}
+button:active {
+    transform: scale(0.94);
+}
+.operator {
+    background: #b8872c;
+    color: #211b13;
+}
+.operator:hover {
+    background: #d4a642;
+}
+.clear {
+    background: #b95a32;
+}
+.clear:hover {
+    background: #d66c3e;
+}
+.equal {
+    background: #e5b84e;
+    color: #211b13;
+    grid-column: span 2;
+}
+.equal:hover {
+    background: #ffd36a;
+}
+@media (max-width: 400px) {
+    .calculator {
+        padding: 18px;
+        border-radius: 20px;
+    }
+    .buttons {
+        gap: 8px;
+    }
+    button {
+        height: 58px;
+        font-size: 19px;
+    }
+    #display {
+        height: 70px;
+        font-size: 26px;
+    }
+}
+@media (max-height: 550px) {
+    .calculator {
+        padding: 12px;
+    }
+    h2 {
+        margin-bottom: 10px;
+    }
+    #display {
+        height: 55px;
+        margin-bottom: 10px;
+    }
+    button {
+        height: 42px;
+    }
+}
+</style>
+</head>
+<body>
+<div class="calculator">
+    <h2>✨ Calculator</h2>
+    <input type="text" id="display" value="0" readonly>
+    <div class="buttons">
+        <button class="clear" onclick="clearDisplay()">AC</button>
+        <button onclick="deleteLast()">DEL</button>
+        <button onclick="percentage()">%</button>
+        <button class="operator" onclick="appendValue('/')">÷</button>
+        <button onclick="appendValue('7')">7</button>
+        <button onclick="appendValue('8')">8</button>
+        <button onclick="appendValue('9')">9</button>
+        <button class="operator" onclick="appendValue('*')">×</button>
+        <button onclick="appendValue('4')">4</button>
+        <button onclick="appendValue('5')">5</button>
+        <button onclick="appendValue('6')">6</button>
+        <button class="operator" onclick="appendValue('-')">−</button>
+        <button onclick="appendValue('1')">1</button>
+        <button onclick="appendValue('2')">2</button>
+        <button onclick="appendValue('3')">3</button>
+        <button class="operator" onclick="appendValue('+')">+</button>
+        <button onclick="appendValue('0')">0</button>
+        <button onclick="appendValue('.')">.</button>
+        <button class="equal" onclick="calculate()">=</button>
+
+    </div>
+</div>
+
+<script>
+const display = document.getElementById("display")
+function appendValue(value) {
+    if (display.value === "Error") {
+        display.value = "0";
+    }
+
+    if (display.value === "0" && !isNaN(value)) {
+        display.value = value;
+    } else {
+        display.value += value;
+    }
+}
+function clearDisplay() {
+    display.value = "0";
+}
+function deleteLast() {
+    display.value = display.value.slice(0, -1) || "0";
+}
+function calculate() {
+    try {
+        let expression = display.value;
+
+        if (!/^[0-9+\-*/.() ]+$/.test(expression)) {
+            throw new Error("Invalid");
+        }
+
+        let result = Function('"use strict"; return (' + expression + ')')();
+
+        if (!Number.isFinite(result)) {
+            throw new Error("Invalid");
+        }
+
+        display.value = Number(result.toPrecision(12)).toString();
+
+    } catch {
+        display.value = "Error";
+    }
+}
+
+function percentage() {
+    try {
+        let value = Number(display.value);
+
+        if (!Number.isFinite(value)) {
+            throw new Error("Invalid");
+        }
+
+        display.value = String(value / 100);
+
+    } catch {
+        display.value = "Error";
+    }
+}
+</script>
+</body>
+</html>
